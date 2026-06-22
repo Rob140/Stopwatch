@@ -1,11 +1,8 @@
-import React from "react";
 import { useState, useEffect, useRef } from "react";
-import { useParams } from "react-router";
+import styles from "./Stopwatch.module.css";
 
 const Stopwatch = () => {
   const [time, setTime] = useState(0);
-  const [products, setProducts] = useState(null);
-  const { id } = useParams();
 
   const [isRaning, setIsraning] = useState(false);
   const ref = useRef();
@@ -34,38 +31,31 @@ const Stopwatch = () => {
     const miliseconds = Math.floor((time / 10) % 100);
     return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}:${String(miliseconds).padStart(2, "0")}`;
   }
-  //   an api data fetching
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const response = await fetch(`https://dummyjson.com/products/${id}`);
-        const data = await response.json();
-        setProducts(data);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    }
-    fetchData();
-  }, [id]);
 
   return (
-    <>
-      <h1>stopwatch</h1>
-      <h3>{formattime()}</h3>
-      <button onClick={startstop}>{isRaning ? "stop" : "start"}</button>
-      <button onClick={reset}>reset</button>
+    <section className={styles.stopwatch}>
+      <header className={styles.header}>
+        <h1 className={styles.title}>Stopwatch</h1>
+      </header>
 
-      {/* rendering an api data */}
+      <div className={styles.display} aria-live="polite">
+        {formattime()}
+      </div>
 
-      <h2>Products{id}</h2>
-      <p>{products && products.description}</p>
+      <div className={styles.controls}>
+        <button
+          className={`${styles.button} ${isRaning ? styles.stop : styles.start}`}
+          onClick={startstop}
+          aria-pressed={isRaning}
+        >
+          {isRaning ? "Stop" : "Start"}
+        </button>
 
-      {/* {products.map((prod) => (
-        <div key={prod.id}>
-          <h3>{prod.title}</h3>
-        </div>
-      ))} */}
-    </>
+        <button className={`${styles.button} ${styles.reset}`} onClick={reset}>
+          Reset
+        </button>
+      </div>
+    </section>
   );
 };
 
